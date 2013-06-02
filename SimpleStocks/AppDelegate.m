@@ -9,10 +9,16 @@
 #import "AppDelegate.h"
 
 @implementation AppDelegate
+@synthesize statusItem;
+@synthesize statusMenu;
+@synthesize controller;
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
+    statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
+    [statusItem setHighlightMode:YES];
+    [statusItem setTitle:@"Status"];
+    [statusItem setMenu:statusMenu];
 }
 
 @end

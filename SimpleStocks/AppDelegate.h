@@ -7,9 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "SSController.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
-@property (assign) IBOutlet NSWindow *window;
+@property SSController *controller;
+@property NSStatusItem *statusItem;
+@property (weak) IBOutlet NSMenu *statusMenu;
 
 @end
