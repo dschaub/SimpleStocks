@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'SimpleStocks' target in the 'SimpleStocks' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
