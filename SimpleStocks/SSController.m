@@ -46,17 +46,23 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection {
     lastData = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
-//    CHCSVParser *parser = [[CHCSVParser alloc] initWithCSVString:lastData];
-//    parser.sanitizesFields = YES;
-//    parser.delegate = self;
-//    [parser parse];
     NSArray *lines = [lastData CSVComponentsWithOptions:CHCSVParserOptionsSanitizesFields];
     NSMutableArray *firstRow = [lines objectAtIndex:0];
     NSString *symbol = [firstRow objectAtIndex:1];
     NSString *last = [firstRow objectAtIndex:2];
     NSString *percent = [firstRow objectAtIndex:3];
     
-    [statusItem setTitle:[NSString stringWithFormat:@"%@ %@ %@", symbol, last, percent]];
+    NSColor *color;
+    if ([percent hasPrefix:@"+"]) {
+        color = [NSColor colorWithSRGBRed:0.0 green:0.4 blue:0.0 alpha:1.0];
+    } else {
+        color = [NSColor colorWithSRGBRed:0.7 green:0.0 blue:0.0 alpha:1.0];
+    }
+    
+    NSString *display = [NSString stringWithFormat:@"%@ %@ %@", symbol, last, percent];
+    NSDictionary *attributes = [NSDictionary dictionaryWithObject:color forKey:NSForegroundColorAttributeName];
+    NSAttributedString *attributedDisplay = [[NSAttributedString alloc] initWithString:display attributes:attributes];
+    [statusItem setAttributedTitle:attributedDisplay];
     
     blocking = NO;
 }
@@ -65,9 +71,5 @@
     [statusItem setTitle:@"Error"];
     NSLog(@"Connection failed: %@ %@", [error localizedDescription], [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
 }
-
-//- (void)parser:(CHCSVParser*)parser didEndLine:(NSUInteger)recordNumber {
-//    
-//}
 
 @end
