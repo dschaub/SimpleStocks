@@ -23,5 +23,6 @@
 - (void)start;
 - (void)makeRequest:(NSTimer*)timer;
 - (void)parseAndRender;
+- (BOOL)isMarketHours;
 
 @end

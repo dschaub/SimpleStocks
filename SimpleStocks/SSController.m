@@ -22,8 +22,10 @@
 }
 
 - (void)makeRequest:(NSTimer*)timer {
-    if (!self.blocking) {
+    static BOOL isFirstRun = YES;
+    if (!self.blocking && ([self isMarketHours] || isFirstRun)) {
         blocking = YES;
+        isFirstRun = NO;
         
         NSString *formattedUrl = [NSString stringWithFormat:API_URL, SP500];
         NSURL *url = [NSURL URLWithString:formattedUrl];
@@ -36,20 +38,6 @@
             receivedData = [[NSMutableData alloc] init];
         }
     }
-}
-
-- (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse *)response {
-    [receivedData setLength:0];
-}
-
-- (void)connection:(NSURLConnection*)connection didReceiveData:(NSData *)data {
-    [receivedData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection*)connection {
-    lastData = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
-    [self parseAndRender];
-    blocking = NO;
 }
 
 - (void)parseAndRender {
@@ -70,6 +58,34 @@
     NSDictionary *attributes = [NSDictionary dictionaryWithObject:color forKey:NSForegroundColorAttributeName];
     NSAttributedString *attributedDisplay = [[NSAttributedString alloc] initWithString:display attributes:attributes];
     [statusItem setAttributedTitle:attributedDisplay];
+}
+
+- (BOOL)isMarketHours {
+    NSDate *now = [[NSDate alloc] init];
+    NSCalendar *cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    
+    NSUInteger units = NSHourCalendarUnit | NSMinuteCalendarUnit | NSWeekdayCalendarUnit;
+    NSDateComponents *time = [cal components:units fromDate:now];
+    
+    float hours = (float)[time hour] + (float)[time minute] / 60.0;
+    return [time weekday] > 1 && [time weekday] < 7 &&
+           hours > 9.5 && hours < 16.0;
+}
+
+#pragma mark -
+
+- (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse *)response {
+    [receivedData setLength:0];
+}
+
+- (void)connection:(NSURLConnection*)connection didReceiveData:(NSData *)data {
+    [receivedData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection*)connection {
+    lastData = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
+    [self parseAndRender];
+    blocking = NO;
 }
 
 - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error {
