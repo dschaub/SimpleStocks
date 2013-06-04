@@ -18,8 +18,10 @@
 @property NSMutableData *receivedData;
 @property NSString *lastData;
 @property (assign) BOOL blocking;
+@property NSTimer *timer;
 
 - (void)start;
-- (void)makeRequest;
+- (void)makeRequest:(NSTimer*)timer;
+- (void)parseAndRender;
 
 @end

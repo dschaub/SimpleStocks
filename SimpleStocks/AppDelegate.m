@@ -17,7 +17,7 @@
     // Insert code here to initialize your application
     statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
     [statusItem setHighlightMode:YES];
-    [statusItem setTitle:@"Status"];
+    [statusItem setTitle:@"Loading"];
     [statusItem setMenu:statusMenu];
     
     controller = [[SSController alloc] init];

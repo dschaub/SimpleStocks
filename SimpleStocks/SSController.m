@@ -14,12 +14,14 @@
 @synthesize receivedData;
 @synthesize blocking;
 @synthesize lastData;
+@synthesize timer;
 
 - (void)start {
-    [self makeRequest];
+    [self makeRequest:nil];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:300 target:self selector:@selector(makeRequest:) userInfo:nil repeats:YES];
 }
 
-- (void)makeRequest {
+- (void)makeRequest:(NSTimer*)timer {
     if (!self.blocking) {
         blocking = YES;
         
@@ -46,6 +48,11 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection {
     lastData = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
+    [self parseAndRender];
+    blocking = NO;
+}
+
+- (void)parseAndRender {
     NSArray *lines = [lastData CSVComponentsWithOptions:CHCSVParserOptionsSanitizesFields];
     NSMutableArray *firstRow = [lines objectAtIndex:0];
     NSString *symbol = [firstRow objectAtIndex:1];
@@ -63,8 +70,6 @@
     NSDictionary *attributes = [NSDictionary dictionaryWithObject:color forKey:NSForegroundColorAttributeName];
     NSAttributedString *attributedDisplay = [[NSAttributedString alloc] initWithString:display attributes:attributes];
     [statusItem setAttributedTitle:attributedDisplay];
-    
-    blocking = NO;
 }
 
 - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error {
