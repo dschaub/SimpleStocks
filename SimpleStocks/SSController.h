@@ -7,7 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CHCSVParser.h"
 
-@interface SSController : NSObject
+#define API_URL @"http://finance.yahoo.com/d/quotes.csv?s=%@&f=snl1p2"
+#define SP500 @"%5EGSPC"
+
+@interface SSController : NSObject <NSURLConnectionDelegate, CHCSVParserDelegate>
+
+@property NSStatusItem *statusItem;
+@property NSMutableData *receivedData;
+@property NSString *lastData;
+@property (assign) BOOL blocking;
+
+- (void)start;
+- (void)makeRequest;
 
 @end

@@ -10,4 +10,64 @@
 
 @implementation SSController
 
+@synthesize statusItem;
+@synthesize receivedData;
+@synthesize blocking;
+@synthesize lastData;
+
+- (void)start {
+    [self makeRequest];
+}
+
+- (void)makeRequest {
+    if (!self.blocking) {
+        blocking = YES;
+        
+        NSString *formattedUrl = [NSString stringWithFormat:API_URL, SP500];
+        NSURL *url = [NSURL URLWithString:formattedUrl];
+        
+        NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60.0];
+        
+        NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
+        
+        if (connection) {
+            receivedData = [[NSMutableData alloc] init];
+        }
+    }
+}
+
+- (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse *)response {
+    [receivedData setLength:0];
+}
+
+- (void)connection:(NSURLConnection*)connection didReceiveData:(NSData *)data {
+    [receivedData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection*)connection {
+    lastData = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
+//    CHCSVParser *parser = [[CHCSVParser alloc] initWithCSVString:lastData];
+//    parser.sanitizesFields = YES;
+//    parser.delegate = self;
+//    [parser parse];
+    NSArray *lines = [lastData CSVComponentsWithOptions:CHCSVParserOptionsSanitizesFields];
+    NSMutableArray *firstRow = [lines objectAtIndex:0];
+    NSString *symbol = [firstRow objectAtIndex:1];
+    NSString *last = [firstRow objectAtIndex:2];
+    NSString *percent = [firstRow objectAtIndex:3];
+    
+    [statusItem setTitle:[NSString stringWithFormat:@"%@ %@ %@", symbol, last, percent]];
+    
+    blocking = NO;
+}
+
+- (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error {
+    [statusItem setTitle:@"Error"];
+    NSLog(@"Connection failed: %@ %@", [error localizedDescription], [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
+}
+
+//- (void)parser:(CHCSVParser*)parser didEndLine:(NSUInteger)recordNumber {
+//    
+//}
+
 @end

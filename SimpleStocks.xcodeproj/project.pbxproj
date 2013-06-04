@@ -14,6 +14,7 @@
 		37C324B2175C083A00CE5B9C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C324B1175C083A00CE5B9C /* AppDelegate.m */; };
 		37C324B5175C083B00CE5B9C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37C324B3175C083B00CE5B9C /* MainMenu.xib */; };
 		37C324BD175C0B2E00CE5B9C /* SSController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C324BC175C0B2E00CE5B9C /* SSController.m */; };
+		37C324C0175D752100CE5B9C /* CHCSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C324BF175D752100CE5B9C /* CHCSVParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,8 @@
 		37C324B4175C083B00CE5B9C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		37C324BB175C0B2E00CE5B9C /* SSController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSController.h; sourceTree = "<group>"; };
 		37C324BC175C0B2E00CE5B9C /* SSController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSController.m; sourceTree = "<group>"; };
+		37C324BE175D752100CE5B9C /* CHCSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHCSVParser.h; sourceTree = "<group>"; };
+		37C324BF175D752100CE5B9C /* CHCSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHCSVParser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +94,8 @@
 				37C324A5175C083A00CE5B9C /* Supporting Files */,
 				37C324BB175C0B2E00CE5B9C /* SSController.h */,
 				37C324BC175C0B2E00CE5B9C /* SSController.m */,
+				37C324BE175D752100CE5B9C /* CHCSVParser.h */,
+				37C324BF175D752100CE5B9C /* CHCSVParser.m */,
 			);
 			path = SimpleStocks;
 			sourceTree = "<group>";
@@ -174,6 +179,7 @@
 				37C324AB175C083A00CE5B9C /* main.m in Sources */,
 				37C324B2175C083A00CE5B9C /* AppDelegate.m in Sources */,
 				37C324BD175C0B2E00CE5B9C /* SSController.m in Sources */,
+				37C324C0175D752100CE5B9C /* CHCSVParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

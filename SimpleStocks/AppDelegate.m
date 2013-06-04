@@ -19,6 +19,11 @@
     [statusItem setHighlightMode:YES];
     [statusItem setTitle:@"Status"];
     [statusItem setMenu:statusMenu];
+    
+    controller = [[SSController alloc] init];
+    controller.statusItem = statusItem;
+    
+    [controller start];
 }
 
 @end
