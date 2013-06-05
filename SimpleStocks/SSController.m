@@ -93,4 +93,18 @@
     NSLog(@"Connection failed: %@ %@", [error localizedDescription], [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
 }
 
+#pragma mark -
+
+- (void)sleepNotification:(NSNotification *)notification {
+    [timer invalidate];
+}
+
+- (void)wakeupNotification:(NSNotification *)notification {
+    [self start];
+}
+
+- (void)dealloc {
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver: self];
+}
+
 @end

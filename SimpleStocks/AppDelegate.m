@@ -24,6 +24,18 @@
     controller.statusItem = statusItem;
     
     [controller start];
+    
+    [[[NSWorkspace sharedWorkspace] notificationCenter]
+        addObserver:controller
+        selector:@selector(sleepNotification:)
+        name:NSWorkspaceWillSleepNotification
+        object:nil];
+    
+    [[[NSWorkspace sharedWorkspace] notificationCenter]
+        addObserver:controller
+        selector:@selector(wakeupNotification:)
+        name:NSWorkspaceDidWakeNotification
+        object:nil];
 }
 
 @end

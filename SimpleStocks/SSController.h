@@ -24,5 +24,7 @@
 - (void)makeRequest:(NSTimer*)timer;
 - (void)parseAndRender;
 - (BOOL)isMarketHours;
+- (void)wakeupNotification:(NSNotification*)notification;
+- (void)sleepNotification:(NSNotification*)notification;
 
 @end
