@@ -15,4 +15,6 @@
 @property NSStatusItem *statusItem;
 @property (weak) IBOutlet NSMenu *statusMenu;
 
+- (IBAction)refreshNow:(id)sender;
+
 @end

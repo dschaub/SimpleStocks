@@ -15,15 +15,24 @@
 @synthesize blocking;
 @synthesize lastData;
 @synthesize timer;
+@synthesize isFirstRun;
 
 - (void)start {
+    isFirstRun = YES;
     [self makeRequest:nil];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(makeRequest:) userInfo:nil repeats:YES];
+    if (timer) {
+        [timer invalidate];
+    }
+    timer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(makeRequest:) userInfo:nil repeats:YES];
+}
+
+- (void)start:(NSTimer*)timer {
+    [self start];
 }
 
 - (void)makeRequest:(NSTimer*)timer {
-    static BOOL isFirstRun = YES;
-    if (!self.blocking && ([self isMarketHours] || isFirstRun)) {
+    NSLog(@"Called makeRequest");
+    if (!blocking && ([self isMarketHours] || isFirstRun)) {
         blocking = YES;
         isFirstRun = NO;
         
@@ -107,11 +116,17 @@
     lastData = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
     [self parseAndRender];
     blocking = NO;
+    NSLog(@"Connection finished successfully");
 }
 
 - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error {
-    [statusItem setTitle:@"Error"];
+    blocking = NO;
+    
+    [statusItem setTitle:@"Loading..."];
     NSLog(@"Connection failed: %@ %@", [error localizedDescription], [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
+    
+    [timer invalidate];
+    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(start:) userInfo:nil repeats:NO];
 }
 
 #pragma mark -

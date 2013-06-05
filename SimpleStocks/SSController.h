@@ -25,10 +25,10 @@
 @property NSString *lastData;
 @property (assign) BOOL blocking;
 @property NSTimer *timer;
-@property NSArray *requestFormat;
-@property NSString *statusFormat;
+@property (assign) BOOL isFirstRun;
 
 - (void)start;
+- (void)start:(NSTimer*)timer;
 - (void)makeRequest:(NSTimer*)timer;
 - (void)parseAndRender;
 - (BOOL)isMarketHours;

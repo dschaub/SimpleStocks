@@ -38,4 +38,8 @@
         object:nil];
 }
 
+- (IBAction)refreshNow:(id)sender {
+    [controller start];
+}
+
 @end
