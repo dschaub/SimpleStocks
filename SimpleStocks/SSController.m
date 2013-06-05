@@ -18,7 +18,7 @@
 
 - (void)start {
     [self makeRequest:nil];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:300 target:self selector:@selector(makeRequest:) userInfo:nil repeats:YES];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(makeRequest:) userInfo:nil repeats:YES];
 }
 
 - (void)makeRequest:(NSTimer*)timer {
@@ -43,18 +43,30 @@
 - (void)parseAndRender {
     NSArray *lines = [lastData CSVComponentsWithOptions:CHCSVParserOptionsSanitizesFields];
     NSMutableArray *firstRow = [lines objectAtIndex:0];
-    NSString *symbol = [firstRow objectAtIndex:1];
-    NSString *last = [firstRow objectAtIndex:2];
-    NSString *percent = [firstRow objectAtIndex:3];
+    NSString *name = [firstRow objectAtIndex:NAME_INDEX];
+    NSString *last = [firstRow objectAtIndex:LAST_INDEX];
+    NSString *change = [firstRow objectAtIndex:CHANGE_INDEX];
+    NSString *percent = [firstRow objectAtIndex:PERCENT_INDEX];
     
+    NSDictionary *pieces = [NSDictionary dictionaryWithObjectsAndKeys:
+                            name, @"name",
+                            last, @"last",
+                            change, @"change",
+                            percent, @"percent",
+                            nil];
+    
+    [self render:pieces];
+}
+
+- (void)render:(NSDictionary*)data {
     NSColor *color;
-    if ([percent hasPrefix:@"+"]) {
+    if ([[data objectForKey:@"change"] hasPrefix:@"+"]) {
         color = [NSColor colorWithSRGBRed:0.0 green:0.4 blue:0.0 alpha:1.0];
     } else {
         color = [NSColor colorWithSRGBRed:0.7 green:0.0 blue:0.0 alpha:1.0];
     }
-    
-    NSString *display = [NSString stringWithFormat:@"%@ %@ %@", symbol, last, percent];
+
+    NSString *display = [self parseFormat:STATUS_FORMAT withDict:data];
     NSDictionary *attributes = [NSDictionary dictionaryWithObject:color forKey:NSForegroundColorAttributeName];
     NSAttributedString *attributedDisplay = [[NSAttributedString alloc] initWithString:display attributes:attributes];
     [statusItem setAttributedTitle:attributedDisplay];
@@ -70,6 +82,15 @@
     float hours = (float)[time hour] + (float)[time minute] / 60.0;
     return [time weekday] > 1 && [time weekday] < 7 &&
            hours > 9.5 && hours < 16.0;
+}
+
+- (NSString*)parseFormat:(NSString*)format withDict:(NSDictionary*)data {
+    NSString *output = [NSString stringWithString:format];
+    for (NSString *key in [data keyEnumerator]) {
+        NSString *formattedKey = [NSString stringWithFormat:@"{%@}", key];
+        output = [output stringByReplacingOccurrencesOfString:formattedKey withString:[data objectForKey:key]];
+    }
+    return output;
 }
 
 #pragma mark -
