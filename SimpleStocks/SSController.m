@@ -30,13 +30,23 @@
     [self start];
 }
 
+- (NSDictionary*)getPortfolio {
+    return [Portfolio portfolio: 70];
+}
+
 - (void)makeRequest:(NSTimer*)timer {
     NSLog(@"Called makeRequest");
     if (!blocking && ([self isMarketHours] || isFirstRun)) {
         blocking = YES;
         isFirstRun = NO;
         
-        NSString *formattedUrl = [NSString stringWithFormat:API_URL, SP500];
+        NSString *tickers = @"";
+        
+        for (NSString *ticker in [self getPortfolio]) {
+            tickers = [NSString stringWithFormat:@"%@,%@", tickers, ticker];
+        }
+        
+        NSString *formattedUrl = [NSString stringWithFormat:API_URL, tickers];
         NSURL *url = [NSURL URLWithString:formattedUrl];
         
         NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60.0];
@@ -51,28 +61,47 @@
 
 - (void)parseAndRender {
     NSArray *lines = [lastData CSVComponentsWithOptions:CHCSVParserOptionsSanitizesFields];
-    NSMutableArray *firstRow = [lines objectAtIndex:0];
-    NSString *name = [firstRow objectAtIndex:NAME_INDEX];
-    NSString *last = [firstRow objectAtIndex:LAST_INDEX];
-    NSString *change = [firstRow objectAtIndex:CHANGE_INDEX];
-    NSString *percent = [firstRow objectAtIndex:PERCENT_INDEX];
+    
+    NSDictionary *portfolio = [self getPortfolio];
+    float indexPrevious = 0.0f;
+    float indexLast = 0.0f;
+    
+    for (int i = 0; i < [lines count]; i++) {
+        NSArray *row = [lines objectAtIndex:i];
+        
+        if ([row count] > 1) {
+            NSString *symbol = [row objectAtIndex:SYMBOL_INDEX];
+            float last = [[row objectAtIndex:LAST_INDEX] floatValue];
+            float previousClose = [[row objectAtIndex:PREVIOUS_CLOSE_INDEX] floatValue];
+            
+            float allocation = [[portfolio objectForKey:symbol] floatValue];
+            
+            indexPrevious += allocation * previousClose;
+            indexLast += allocation * last;
+        }
+    }
+    
+    NSString *name = @"Betterment 70/30";
+    NSString *last = [NSString stringWithFormat:@"%.2f", indexLast];
+    NSString *change = [NSString stringWithFormat:@"%.2f", indexLast - indexPrevious];
+    NSString *percent = [NSString stringWithFormat:@"%.2f%%", ((indexLast - indexPrevious) / indexPrevious) * 100.0];
     
     NSDictionary *pieces = [NSDictionary dictionaryWithObjectsAndKeys:
-                            name, @"name",
-                            last, @"last",
-                            change, @"change",
-                            percent, @"percent",
-                            nil];
+                                name, @"name",
+                                last, @"last",
+                                change, @"change",
+                                percent, @"percent",
+                                nil];
     
     [self render:pieces];
 }
 
 - (void)render:(NSDictionary*)data {
     NSColor *color;
-    if ([[data objectForKey:@"change"] hasPrefix:@"+"]) {
-        color = [NSColor colorWithSRGBRed:0.0 green:0.4 blue:0.0 alpha:1.0];
-    } else {
+    if ([[data objectForKey:@"change"] hasPrefix:@"-"]) {
         color = [NSColor colorWithSRGBRed:0.7 green:0.0 blue:0.0 alpha:1.0];
+    } else {
+        color = [NSColor colorWithSRGBRed:0.0 green:0.4 blue:0.0 alpha:1.0];
     }
 
     NSString *display = [self parseFormat:STATUS_FORMAT withDict:data];

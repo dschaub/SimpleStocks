@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3781EBD518A097420010D311 /* Portfolio.m in Sources */ = {isa = PBXBuildFile; fileRef = 3781EBD418A097420010D311 /* Portfolio.m */; };
 		37C3249F175C083A00CE5B9C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37C3249E175C083A00CE5B9C /* Cocoa.framework */; };
 		37C324A9175C083A00CE5B9C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 37C324A7175C083A00CE5B9C /* InfoPlist.strings */; };
 		37C324AB175C083A00CE5B9C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C324AA175C083A00CE5B9C /* main.m */; };
@@ -18,6 +19,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3781EBD318A097420010D311 /* Portfolio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Portfolio.h; sourceTree = "<group>"; };
+		3781EBD418A097420010D311 /* Portfolio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Portfolio.m; sourceTree = "<group>"; };
+		3781EBF718A098F50010D311 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		3781EBF918A099120010D311 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		3781EBFB18A0991A0010D311 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		3781EBFD18A099260010D311 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		37C3249B175C083A00CE5B9C /* SimpleStocks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleStocks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37C3249E175C083A00CE5B9C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		37C324A1175C083A00CE5B9C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -69,6 +76,10 @@
 		37C3249D175C083A00CE5B9C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3781EBFD18A099260010D311 /* SystemConfiguration.framework */,
+				3781EBFB18A0991A0010D311 /* libz.dylib */,
+				3781EBF918A099120010D311 /* CoreServices.framework */,
+				3781EBF718A098F50010D311 /* CFNetwork.framework */,
 				37C3249E175C083A00CE5B9C /* Cocoa.framework */,
 				37C324A0175C083A00CE5B9C /* Other Frameworks */,
 			);
@@ -92,6 +103,8 @@
 				37C324B1175C083A00CE5B9C /* AppDelegate.m */,
 				37C324B3175C083B00CE5B9C /* MainMenu.xib */,
 				37C324A5175C083A00CE5B9C /* Supporting Files */,
+				3781EBD318A097420010D311 /* Portfolio.h */,
+				3781EBD418A097420010D311 /* Portfolio.m */,
 				37C324BB175C0B2E00CE5B9C /* SSController.h */,
 				37C324BC175C0B2E00CE5B9C /* SSController.m */,
 				37C324BE175D752100CE5B9C /* CHCSVParser.h */,
@@ -177,6 +190,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37C324AB175C083A00CE5B9C /* main.m in Sources */,
+				3781EBD518A097420010D311 /* Portfolio.m in Sources */,
 				37C324B2175C083A00CE5B9C /* AppDelegate.m in Sources */,
 				37C324BD175C0B2E00CE5B9C /* SSController.m in Sources */,
 				37C324C0175D752100CE5B9C /* CHCSVParser.m in Sources */,
@@ -315,6 +329,7 @@
 				37C324BA175C083B00CE5B9C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
