@@ -7,13 +7,13 @@
 //
 
 #import "SettingsWindow.h"
+#import "AppDelegate.h"
 #import <math.h>
 
 #define ALLOCATION_KEY @"allocation"
 #define DATA_SOURCE_KEY @"allocationDataSource"
 
 @interface SettingsWindow ()
-
 @end
 
 @implementation SettingsWindow
@@ -33,6 +33,9 @@
     
     [settings setObject:[NSString stringWithFormat:@"0.%d", (int)round(allocation)] forKey:ALLOCATION_KEY];
     [settings setObject:[allocationDataSource stringValue] forKey:DATA_SOURCE_KEY];
+    
+    AppDelegate* delegate = [NSApp delegate];
+    [delegate refreshNow:sender];
     
     [self.window close];
 }

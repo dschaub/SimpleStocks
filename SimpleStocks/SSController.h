@@ -27,6 +27,7 @@
 @interface SSController : NSObject <GetRequestDelegate, CHCSVParserDelegate>
 
 @property NSStatusItem *statusItem;
+@property NSMenu *statusMenu;
 @property (assign) BOOL blocking;
 @property NSTimer *timer;
 @property (assign) BOOL isFirstRun;

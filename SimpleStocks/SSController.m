@@ -7,12 +7,24 @@
 //
 
 #import "SSController.h"
+#import "AppDelegate.h"
+
+#define TICKER_MENU_ITEM_TAG 42
+
+#define RED_COLOR ([NSColor colorWithSRGBRed:0.7 green:0.0 blue:0.0 alpha:1.0])
+#define GREEN_COLOR ([NSColor colorWithSRGBRed:0.0 green:0.4 blue:0.0 alpha:1.0])
 
 @implementation SSController
 
-@synthesize blocking, statusItem, timer, isFirstRun;
+@synthesize blocking, statusItem, statusMenu, timer, isFirstRun;
 
 - (void)start {
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    if (![settings objectForKey:@"allocationDataSource"] || ![settings objectForKey:@"allocation"]) {
+        AppDelegate* appDelegate = [NSApp delegate];
+        [appDelegate openSettings:nil];
+        return;
+    }
     [PortfolioManager loadDataAndCallback:self selector:@selector(startRequestCycle)];
 }
 
@@ -71,6 +83,7 @@
 
 - (void)parseAndRender: (NSString*)result {
     NSArray *lines = [result CSVComponentsWithOptions:CHCSVParserOptionsSanitizesFields];
+    [self clearQuotes];
     
     NSDictionary *portfolio = [self getPortfolio];
     float indexPrevious = 0.0f;
@@ -80,6 +93,8 @@
         NSArray *row = [lines objectAtIndex:i];
     
         if ([row count] == EXPECTED_COLUMNS) {
+            [self addQuote:row];
+            
             NSString *symbol = [row objectAtIndex:SYMBOL_INDEX];
             float last = [[row objectAtIndex:LAST_INDEX] floatValue];
             float previousClose = [[row objectAtIndex:PREVIOUS_CLOSE_INDEX] floatValue];
@@ -96,8 +111,11 @@
     
     NSString *name = [NSString stringWithFormat:@"Betterment %d%%", (int)allocation];
     NSString *last = [NSString stringWithFormat:@"%.2f", indexLast];
-    NSString *change = [NSString stringWithFormat:@"%.2f", indexLast - indexPrevious];
-    NSString *percent = [NSString stringWithFormat:@"%.2f%%", ((indexLast - indexPrevious) / indexPrevious) * 100.0];
+    
+    double changeValue = indexLast - indexPrevious;
+    NSString *plus = changeValue ? @"+" : @"";
+    NSString *change = [NSString stringWithFormat:@"%@%.2f", plus, changeValue];
+    NSString *percent = [NSString stringWithFormat:@"%@%.2f%%", plus, ((indexLast - indexPrevious) / indexPrevious) * 100.0];
     
     NSDictionary *pieces = [NSDictionary dictionaryWithObjectsAndKeys:
                                 name, @"name",
@@ -106,21 +124,55 @@
                                 percent, @"percent",
                                 nil];
     
-    [self render:pieces];
+    [statusItem setAttributedTitle: [self render:pieces]];
 }
 
-- (void)render:(NSDictionary*)data {
+- (NSAttributedString*)render:(NSDictionary*)data {
     NSColor *color;
     if ([[data objectForKey:@"change"] hasPrefix:@"-"]) {
-        color = [NSColor colorWithSRGBRed:0.7 green:0.0 blue:0.0 alpha:1.0];
+        color = RED_COLOR;
     } else {
-        color = [NSColor colorWithSRGBRed:0.0 green:0.4 blue:0.0 alpha:1.0];
+        color = GREEN_COLOR;
     }
 
     NSString *display = [self parseFormat:STATUS_FORMAT withDict:data];
     NSDictionary *attributes = [NSDictionary dictionaryWithObject:color forKey:NSForegroundColorAttributeName];
     NSAttributedString *attributedDisplay = [[NSAttributedString alloc] initWithString:display attributes:attributes];
-    [statusItem setAttributedTitle:attributedDisplay];
+    
+    return attributedDisplay;
+}
+
+- (void)clearQuotes {
+    for (NSMenuItem *item in [statusMenu itemArray]) {
+        if ([item tag] == TICKER_MENU_ITEM_TAG) {
+            [statusMenu removeItem:item];
+        }
+    }
+    
+    [statusMenu insertItem:[NSMenuItem separatorItem] atIndex:0];
+}
+
+- (void)addQuote: (NSArray*)row {
+    NSMenuItem *item = [[NSMenuItem alloc] init];
+    [item setTag:TICKER_MENU_ITEM_TAG];
+    
+    NSString *symbol = [row objectAtIndex:SYMBOL_INDEX];
+    double allocation = [[[PortfolioManager currentPortfolio] objectForKey:symbol] doubleValue];
+    
+    if (allocation > 0) {
+        NSString *name = [NSString stringWithFormat:@"%@ (%.1f%%)", symbol, allocation * 100];
+        
+        NSDictionary *pieces = [NSDictionary dictionaryWithObjectsAndKeys:
+                                name, @"name",
+                                [row objectAtIndex:LAST_INDEX], @"last",
+                                [row objectAtIndex:CHANGE_INDEX], @"change",
+                                [row objectAtIndex:PERCENT_INDEX], @"percent",
+                                nil];
+        
+        [item setAttributedTitle:[self render:pieces]];
+        
+        [statusMenu insertItem:item atIndex:0];
+    }
 }
 
 - (BOOL)isMarketHours {

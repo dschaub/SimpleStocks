@@ -24,6 +24,7 @@
     
     controller = [[SSController alloc] init];
     controller.statusItem = statusItem;
+    controller.statusMenu = statusMenu;
     
     [controller start];
     
@@ -48,7 +49,7 @@
     if (!settingsWindow) {
         settingsWindow = [[SettingsWindow alloc] initWithWindowNibName:@"SettingsWindow"];
     }
-    [settingsWindow showWindow:self];
+    [settingsWindow.window makeKeyAndOrderFront:sender];
 }
 
 @end

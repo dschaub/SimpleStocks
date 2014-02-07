@@ -50,9 +50,7 @@ static PortfolioManager *instance;
 + (NSDictionary*)currentPortfolio {
     NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
     NSString *allocation = [settings objectForKey:@"allocation"];
-    
-    NSLog(@"currentPortfolio: allocation is %@", allocation);
-    
+
     return [[PortfolioManager getInstance] componentsForAllocation:allocation];
 }
 
