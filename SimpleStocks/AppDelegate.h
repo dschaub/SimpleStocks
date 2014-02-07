@@ -8,13 +8,17 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SSController.h"
+#import "SettingsWindow.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
 @property SSController *controller;
 @property NSStatusItem *statusItem;
+
 @property (weak) IBOutlet NSMenu *statusMenu;
+@property (strong) IBOutlet SettingsWindow *settingsWindow;
 
 - (IBAction)refreshNow:(id)sender;
+- (IBAction)openSettings:(id)sender;
 
 @end

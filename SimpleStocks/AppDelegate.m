@@ -9,8 +9,10 @@
 #import "AppDelegate.h"
 
 @implementation AppDelegate
+
 @synthesize statusItem;
 @synthesize statusMenu;
+@synthesize settingsWindow;
 @synthesize controller;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -40,6 +42,13 @@
 
 - (IBAction)refreshNow:(id)sender {
     [controller start];
+}
+
+- (IBAction)openSettings:(id)sender {
+    if (!settingsWindow) {
+        settingsWindow = [[SettingsWindow alloc] initWithWindowNibName:@"SettingsWindow"];
+    }
+    [settingsWindow.window makeKeyAndOrderFront:self];
 }
 
 @end

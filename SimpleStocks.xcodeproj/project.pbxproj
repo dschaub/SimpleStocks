@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3728CDDF18A49CA700763FA0 /* SettingsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CDDD18A49CA700763FA0 /* SettingsWindow.m */; };
+		3728CDE018A49CA700763FA0 /* SettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3728CDDE18A49CA700763FA0 /* SettingsWindow.xib */; };
 		3781EBD518A097420010D311 /* PortfolioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3781EBD418A097420010D311 /* PortfolioManager.m */; };
 		37C3249F175C083A00CE5B9C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37C3249E175C083A00CE5B9C /* Cocoa.framework */; };
 		37C324A9175C083A00CE5B9C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 37C324A7175C083A00CE5B9C /* InfoPlist.strings */; };
@@ -20,6 +22,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3728CDDC18A49CA700763FA0 /* SettingsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsWindow.h; sourceTree = "<group>"; };
+		3728CDDD18A49CA700763FA0 /* SettingsWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsWindow.m; sourceTree = "<group>"; };
+		3728CDDE18A49CA700763FA0 /* SettingsWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsWindow.xib; sourceTree = "<group>"; };
 		3781EBD318A097420010D311 /* PortfolioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortfolioManager.h; sourceTree = "<group>"; };
 		3781EBD418A097420010D311 /* PortfolioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortfolioManager.m; sourceTree = "<group>"; };
 		3781EBF718A098F50010D311 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -114,6 +119,9 @@
 				37C324BF175D752100CE5B9C /* CHCSVParser.m */,
 				37F4529918A48154003D1AF4 /* GetRequest.h */,
 				37F4529A18A48154003D1AF4 /* GetRequest.m */,
+				3728CDDC18A49CA700763FA0 /* SettingsWindow.h */,
+				3728CDDD18A49CA700763FA0 /* SettingsWindow.m */,
+				3728CDDE18A49CA700763FA0 /* SettingsWindow.xib */,
 			);
 			path = SimpleStocks;
 			sourceTree = "<group>";
@@ -183,6 +191,7 @@
 			files = (
 				37C324A9175C083A00CE5B9C /* InfoPlist.strings in Resources */,
 				37C324AF175C083A00CE5B9C /* Credits.rtf in Resources */,
+				3728CDE018A49CA700763FA0 /* SettingsWindow.xib in Resources */,
 				37C324B5175C083B00CE5B9C /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -200,6 +209,7 @@
 				37F4529B18A48154003D1AF4 /* GetRequest.m in Sources */,
 				37C324BD175C0B2E00CE5B9C /* SSController.m in Sources */,
 				37C324C0175D752100CE5B9C /* CHCSVParser.m in Sources */,
+				3728CDDF18A49CA700763FA0 /* SettingsWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
