@@ -11,7 +11,7 @@
 #import "PortfolioManager.h"
 #import "GetRequest.h"
 
-#define API_URL @"http://finance.yahoo.com/d/quotes.csv?s=%@&f=snl1c1p2p"
+#define API_URL @"http://download.finance.yahoo.com/d/quotes.csv?s=%@&f=snl1c1p2p"
 #define SP500 @"%5EGSPC"
 #define STATUS_FORMAT @"{name} {last} | {change} ({percent})"
 
