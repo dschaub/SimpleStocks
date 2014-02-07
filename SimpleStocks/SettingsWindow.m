@@ -9,6 +9,9 @@
 #import "SettingsWindow.h"
 #import <math.h>
 
+#define ALLOCATION_KEY @"allocation"
+#define DATA_SOURCE_KEY @"allocationDataSource"
+
 @interface SettingsWindow ()
 
 @end
@@ -23,11 +26,37 @@
     [allocationLabel setStringValue:[NSString stringWithFormat:@"%d%% stocks", (int)round(value)]];
 }
 
-- (void)windowDidLoad
-{
-    [super windowDidLoad];
+- (IBAction)clickedOK:(id)sender {
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
     
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+    double allocation = [allocationSlider doubleValue];
+    
+    [settings setObject:[NSString stringWithFormat:@"0.%d", (int)round(allocation)] forKey:ALLOCATION_KEY];
+    [settings setObject:[allocationDataSource stringValue] forKey:DATA_SOURCE_KEY];
+    
+    [self.window close];
+}
+
+- (IBAction)clickedCancel:(id)sender {
+    [self.window close];
+}
+
+- (void)windowDidLoad {
+    [super windowDidLoad];
+
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    
+    NSString *allocationSetting = [settings objectForKey:ALLOCATION_KEY];
+    NSString *dataSourceSetting = [settings objectForKey:DATA_SOURCE_KEY];
+    
+    if (dataSourceSetting) {
+        [allocationDataSource setStringValue:dataSourceSetting];
+    }
+    
+    if (allocationSetting) {
+        [allocationSlider setDoubleValue:[allocationSetting doubleValue]*100];
+        [self sliderMoved:allocationSlider];
+    }
 }
 
 @end

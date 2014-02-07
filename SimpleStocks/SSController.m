@@ -13,6 +13,14 @@
 @synthesize blocking, statusItem, timer, isFirstRun;
 
 - (void)start {
+    [PortfolioManager loadDataAndCallback:self selector:@selector(startRequestCycle)];
+}
+
+- (void)start:(NSTimer*)timer {
+    [self startRequestCycle];
+}
+
+- (void)startRequestCycle {
     isFirstRun = YES;
     [self makeRequest:nil];
     if (timer) {
@@ -21,12 +29,8 @@
     timer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(makeRequest:) userInfo:nil repeats:YES];
 }
 
-- (void)start:(NSTimer*)timer {
-    [self start];
-}
-
 - (NSDictionary*)getPortfolio {
-    return [PortfolioManager portfolio: 70];
+    return [PortfolioManager currentPortfolio];
 }
 
 - (void)makeRequest:(NSTimer*)timer {
@@ -87,7 +91,10 @@
         }
     }
     
-    NSString *name = @"Betterment 70/30";
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    double allocation = [[settings objectForKey:@"allocation"] doubleValue] * 100;
+    
+    NSString *name = [NSString stringWithFormat:@"Betterment %d%%", (int)allocation];
     NSString *last = [NSString stringWithFormat:@"%.2f", indexLast];
     NSString *change = [NSString stringWithFormat:@"%.2f", indexLast - indexPrevious];
     NSString *percent = [NSString stringWithFormat:@"%.2f%%", ((indexLast - indexPrevious) / indexPrevious) * 100.0];

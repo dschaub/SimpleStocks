@@ -7,9 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GetRequest.h"
 
-@interface PortfolioManager : NSObject
+@interface PortfolioManager : NSObject <GetRequestDelegate>
 
-+ (NSDictionary*)portfolio: (int)allocation;
++ (PortfolioManager*)getInstance;
++ (void)loadDataAndCallback:(id)delegate selector:(SEL)selector;
++ (NSDictionary*)currentPortfolio;
 
 @end

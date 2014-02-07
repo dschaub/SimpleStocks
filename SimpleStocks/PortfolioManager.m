@@ -8,27 +8,87 @@
 
 #import "PortfolioManager.h"
 
+static PortfolioManager *instance;
+
+@interface PortfolioManager ()
+@property id requestDelegate;
+@property (assign) SEL requestSelector;
+@property NSDictionary *allocationData;
+@end
+
 @implementation PortfolioManager
 
-+ (NSDictionary*)portfolio: (int)allocation {
-    NSDictionary* portfolios = @{
-        @"70": @{
-            @"VTI": @0.1291,
-            @"VTIP": @0.0000,
-            @"IWS": @0.0414,
-            @"VEA": @0.3010,
-            @"IWN": @0.0362,
-            @"LQD": @0.0517,
-            @"VWOB": @0.0417,
-            @"AGG": @0.1037,
-            @"IVE": @0.1292,
-            @"VWO": @0.0630,
-            @"BNDX": @0.1030,
-            @"SHV": @0.0000
-        }
-    };
+@synthesize requestDelegate, requestSelector, allocationData;
+
++ (PortfolioManager*)getInstance {
+    if (instance == nil) {
+        instance = [[PortfolioManager alloc] init];
+    }
+    return instance;
+}
+
++ (void)loadDataAndCallback:(id)delegate selector:(SEL)selector {
+    PortfolioManager *manager = [PortfolioManager getInstance];
+    manager.requestDelegate = delegate;
+    manager.requestSelector = selector;
     
-    return [portfolios valueForKey:[NSString stringWithFormat:@"%d", allocation]];
+    if ([self currentPortfolio] == nil) {
+        NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+        NSString *url = [settings objectForKey:@"allocationDataSource"];
+        if (url == nil) {
+            return;
+        }
+        
+        NSLog(@"Portfolio set URL is %@", url);
+        
+        [GetRequest getUrl:url delegate:(id <GetRequestDelegate>)manager];
+    } else {
+        [manager finishedLoadingPortfolioData];
+    }
+}
+
++ (NSDictionary*)currentPortfolio {
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    NSString *allocation = [settings objectForKey:@"allocation"];
+    
+    NSLog(@"currentPortfolio: allocation is %@", allocation);
+    
+    return [[PortfolioManager getInstance] componentsForAllocation:allocation];
+}
+
+- (NSDictionary*)componentsForAllocation: (NSString*)allocation {
+    if (allocationData) {
+        return [allocationData objectForKey:allocation];
+    }
+    NSLog(@"Tried to get components without initializing allocation data");
+    return nil;
+}
+
+- (void)finishedLoadingPortfolioData {
+    IMP method = [requestDelegate methodForSelector:requestSelector];
+    void (*func)(id, SEL) = (void*) method;
+    func(requestDelegate, requestSelector);
+}
+
+- (void)success: (NSString*)result {
+    NSLog(@"Finished loading portfolio set data");
+    
+    NSData *data = [result dataUsingEncoding:NSASCIIStringEncoding];
+    NSError *error = nil;
+    NSDictionary* portfolioSet = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    
+    if (error) {
+        NSLog(@"Could not derialize JSON data");
+        return;
+    }
+    
+    allocationData = [portfolioSet objectForKey:@"componentAllocations"];
+    
+    [self finishedLoadingPortfolioData];
+}
+
+- (void)fail: (NSError*)error {
+    NSLog(@"Failed to load portfolio set data");
 }
 
 @end

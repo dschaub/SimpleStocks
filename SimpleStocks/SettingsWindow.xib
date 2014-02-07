@@ -80,6 +80,9 @@
 DQ
 </string>
                         </buttonCell>
+                        <connections>
+                            <action selector="clickedOK:" target="-2" id="sbU-Fb-08c"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="atq-rk-h1C">
                         <rect key="frame" x="211" y="13" width="92" height="32"/>
@@ -91,6 +94,9 @@ DQ
 Gw
 </string>
                         </buttonCell>
+                        <connections>
+                            <action selector="clickedCancel:" target="-2" id="XgC-6L-vh9"/>
+                        </connections>
                     </button>
                 </subviews>
             </view>

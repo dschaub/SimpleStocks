@@ -48,7 +48,7 @@
     if (!settingsWindow) {
         settingsWindow = [[SettingsWindow alloc] initWithWindowNibName:@"SettingsWindow"];
     }
-    [settingsWindow.window makeKeyAndOrderFront:self];
+    [settingsWindow showWindow:self];
 }
 
 @end
