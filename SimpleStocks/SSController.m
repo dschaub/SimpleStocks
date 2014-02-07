@@ -149,7 +149,9 @@
         }
     }
     
-    [statusMenu insertItem:[NSMenuItem separatorItem] atIndex:0];
+    NSMenuItem *separator = [NSMenuItem separatorItem];
+    [separator setTag: TICKER_MENU_ITEM_TAG];
+    [statusMenu insertItem:separator atIndex:0];
 }
 
 - (void)addQuote: (NSArray*)row {
