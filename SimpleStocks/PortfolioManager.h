@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Portfolio : NSObject
+@interface PortfolioManager : NSObject
 
 + (NSDictionary*)portfolio: (int)allocation;
 

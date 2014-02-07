@@ -10,12 +10,7 @@
 
 @implementation SSController
 
-@synthesize statusItem;
-@synthesize receivedData;
-@synthesize blocking;
-@synthesize lastData;
-@synthesize timer;
-@synthesize isFirstRun;
+@synthesize blocking, statusItem, timer, isFirstRun;
 
 - (void)start {
     isFirstRun = YES;
@@ -31,7 +26,7 @@
 }
 
 - (NSDictionary*)getPortfolio {
-    return [Portfolio portfolio: 70];
+    return [PortfolioManager portfolio: 70];
 }
 
 - (void)makeRequest:(NSTimer*)timer {
@@ -40,27 +35,38 @@
         blocking = YES;
         isFirstRun = NO;
         
-        NSString *tickers = @"";
+        NSString *tickers = nil;
         
         for (NSString *ticker in [self getPortfolio]) {
-            tickers = [NSString stringWithFormat:@"%@,%@", tickers, ticker];
+            if (tickers == nil) {
+                tickers = ticker;
+            } else {
+                tickers = [NSString stringWithFormat:@"%@,%@", tickers, ticker];
+            }
         }
         
         NSString *formattedUrl = [NSString stringWithFormat:API_URL, tickers];
-        NSURL *url = [NSURL URLWithString:formattedUrl];
         
-        NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60.0];
-        
-        NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
-        
-        if (connection) {
-            receivedData = [[NSMutableData alloc] init];
-        }
+        [GetRequest getUrl:formattedUrl delegate:self];
     }
 }
 
-- (void)parseAndRender {
-    NSArray *lines = [lastData CSVComponentsWithOptions:CHCSVParserOptionsSanitizesFields];
+- (void)success: (NSString*)result {
+    blocking = NO;
+    [self parseAndRender: result];
+}
+
+- (void)fail: (NSError*)error {
+    blocking = NO;
+    
+    [statusItem setTitle:@"Loading..."];
+    
+    [timer invalidate];
+    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(start:) userInfo:nil repeats:NO];
+}
+
+- (void)parseAndRender: (NSString*)result {
+    NSArray *lines = [result CSVComponentsWithOptions:CHCSVParserOptionsSanitizesFields];
     
     NSDictionary *portfolio = [self getPortfolio];
     float indexPrevious = 0.0f;
@@ -68,8 +74,8 @@
     
     for (int i = 0; i < [lines count]; i++) {
         NSArray *row = [lines objectAtIndex:i];
-        
-        if ([row count] > 1) {
+    
+        if ([row count] == EXPECTED_COLUMNS) {
             NSString *symbol = [row objectAtIndex:SYMBOL_INDEX];
             float last = [[row objectAtIndex:LAST_INDEX] floatValue];
             float previousClose = [[row objectAtIndex:PREVIOUS_CLOSE_INDEX] floatValue];
@@ -131,32 +137,6 @@
     return output;
 }
 
-#pragma mark -
-
-- (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse *)response {
-    [receivedData setLength:0];
-}
-
-- (void)connection:(NSURLConnection*)connection didReceiveData:(NSData *)data {
-    [receivedData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection*)connection {
-    lastData = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
-    [self parseAndRender];
-    blocking = NO;
-    NSLog(@"Connection finished successfully");
-}
-
-- (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error {
-    blocking = NO;
-    
-    [statusItem setTitle:@"Loading..."];
-    NSLog(@"Connection failed: %@ %@", [error localizedDescription], [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
-    
-    [timer invalidate];
-    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(start:) userInfo:nil repeats:NO];
-}
 
 #pragma mark -
 

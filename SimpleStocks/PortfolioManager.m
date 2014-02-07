@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Daniel Schaub. All rights reserved.
 //
 
-#import "Portfolio.h"
+#import "PortfolioManager.h"
 
-@implementation Portfolio
+@implementation PortfolioManager
 
 + (NSDictionary*)portfolio: (int)allocation {
     NSDictionary* portfolios = @{

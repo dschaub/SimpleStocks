@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "CHCSVParser.h"
-#import "Portfolio.h"
+#import "PortfolioManager.h"
+#import "GetRequest.h"
 
 #define API_URL @"http://finance.yahoo.com/d/quotes.csv?s=%@&f=snl1c1p2p"
 #define SP500 @"%5EGSPC"
@@ -21,11 +22,11 @@
 #define PERCENT_INDEX 4
 #define PREVIOUS_CLOSE_INDEX 5
 
-@interface SSController : NSObject <NSURLConnectionDelegate, CHCSVParserDelegate>
+#define EXPECTED_COLUMNS 6
+
+@interface SSController : NSObject <GetRequestDelegate, CHCSVParserDelegate>
 
 @property NSStatusItem *statusItem;
-@property NSMutableData *receivedData;
-@property NSString *lastData;
 @property (assign) BOOL blocking;
 @property NSTimer *timer;
 @property (assign) BOOL isFirstRun;
@@ -33,9 +34,6 @@
 - (void)start;
 - (void)start:(NSTimer*)timer;
 - (void)makeRequest:(NSTimer*)timer;
-- (void)parseAndRender;
-- (BOOL)isMarketHours;
-- (NSString*)parseFormat:(NSString*)format withDict:(NSDictionary*)data;
 - (void)wakeupNotification:(NSNotification*)notification;
 - (void)sleepNotification:(NSNotification*)notification;
 
