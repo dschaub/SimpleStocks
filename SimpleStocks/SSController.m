@@ -113,7 +113,7 @@
     NSString *last = [NSString stringWithFormat:@"%.2f", indexLast];
     
     double changeValue = indexLast - indexPrevious;
-    NSString *plus = changeValue ? @"+" : @"";
+    NSString *plus = changeValue > 0 ? @"+" : @"";
     NSString *change = [NSString stringWithFormat:@"%@%.2f", plus, changeValue];
     NSString *percent = [NSString stringWithFormat:@"%@%.2f%%", plus, ((indexLast - indexPrevious) / indexPrevious) * 100.0];
     
